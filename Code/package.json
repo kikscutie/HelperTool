@@ -13,7 +13,7 @@
   "build": {
     "appId": "com.eric.helpertool",
     "productName": "HelperTool",
-    "icon": "assets/icon.ico",
+    "icon": "assets/helpertool.ico",
     "directories": {
       "output": "dist"
     },

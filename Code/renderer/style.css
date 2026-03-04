@@ -214,9 +214,9 @@ html, body {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--r-xs);
-  flex: 1;               /* fills all remaining space */
-  min-width: 0;          /* allows shrinking below content size */
-  max-width: 600px;      /* don't go crazy wide on huge monitors */
+  flex: 1;
+  min-width: 0;
+  max-width: 600px;
 }
 
 .progress-label {
@@ -519,7 +519,7 @@ button:disabled {
   padding: 4px 13px;
 }
 .filter-chip.clear-all:hover {
-  background: rgba(244,100,95,0.22);
+  background: rgba(255, 255, 255, 0.858);
   transform: none !important;
   box-shadow: none !important;
 }
@@ -529,9 +529,23 @@ button:disabled {
 ------------------------------------------------------------ */
 .search-section { position: relative; }
 
+/* Search icon ghost inside input */
+.search-section::before {
+  content: '⌕';
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 17px;
+  color: var(--text-muted);
+  pointer-events: none;
+  z-index: 1;
+  line-height: 1;
+}
+
 .search-input {
   height: 38px;
-  padding: 0 14px;
+  padding: 0 14px 0 34px;       /* left room for the icon */
   width: 230px;
   background: var(--bg-surface);
   border: 1px solid var(--border-mid);
@@ -549,68 +563,100 @@ button:disabled {
   width: 300px;
 }
 
+/* ── Dropdown panel ────────────────────────────────────────── */
+/* Stepped up from --bg-surface so it floats above the tree  */
 .search-suggestions {
   position: absolute;
   top: calc(100% + 7px);
   left: 0;
-  width: 370px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-mid);
+  width: 380px;
+  background: #1e2840;
+  border: 1px solid rgba(255,255,255,0.13);
   border-radius: var(--r-md);
   max-height: 340px;
   overflow-y: auto;
   list-style: none;
-  padding: 4px 0;
+  padding: 5px 0;
   margin: 0;
   display: none;
   z-index: 150;
-  box-shadow: 0 12px 32px rgba(0,0,0,0.55);
+  box-shadow:
+    0 20px 48px rgba(0,0,0,0.65),
+    0 0 0 1px rgba(232,168,56,0.06);
 }
 
+/* ── Each result row ───────────────────────────────────────── */
 .search-suggestions .search-result-item {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 10px 15px;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 14px;
   cursor: pointer;
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid rgba(255,255,255,0.045);
   transition: background var(--ease);
 }
 .search-suggestions .search-result-item:last-child { border-bottom: none; }
-.search-suggestions .search-result-item:hover { background: var(--bg-hover); }
 
-.result-name {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-primary);
+.search-suggestions .search-result-item:hover {
+  background: rgba(232,168,56,0.07);
 }
+
+/* File / folder name — primary, high contrast */
+.result-name {
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #e2e8f8;               /* near-white, pops off dark panel */
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: color var(--ease);
+}
+
+/* Path breadcrumb — clearly secondary */
 .result-path {
   font-family: var(--font-mono);
-  font-size: 11.5px;
-  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 400;
+  color: #47607e;               /* dim blue-grey */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 340px;
+  flex: 1;
+  min-width: 0;
+  transition: color var(--ease);
 }
 
+/* Hover: name goes amber, path lifts slightly */
+.search-suggestions .search-result-item:hover .result-name {
+  color: var(--accent);
+}
+.search-suggestions .search-result-item:hover .result-path {
+  color: #7090b0;
+}
+
+/* Fallback plain list items */
 .search-suggestions li:not(.search-result-item) {
-  padding: 10px 15px;
+  padding: 9px 14px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13.5px;
   color: var(--text-secondary);
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid rgba(255,255,255,0.045);
   transition: background var(--ease);
 }
 .search-suggestions li:not(.search-result-item):last-child { border-bottom: none; }
 .search-suggestions li:not(.search-result-item):hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
+  background: rgba(232,168,56,0.07);
+  color: #e2e8f8;
 }
 
+/* Thin amber-tinted scrollbar */
 .search-suggestions::-webkit-scrollbar { width: 4px; }
 .search-suggestions::-webkit-scrollbar-track { background: transparent; }
-.search-suggestions::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 2px; }
+.search-suggestions::-webkit-scrollbar-thumb {
+  background: rgba(232,168,56,0.2);
+  border-radius: 2px;
+}
 
 /* ------------------------------------------------------------
    TREE VIEW CONTAINER
@@ -694,7 +740,7 @@ button:disabled {
   border: 1px solid var(--folder-border);
   color: var(--folder-text);
   font-weight: 600;
-  font-size: 13px;
+  font-size: 15px;
 }
 .tree-node.folder:hover {
   background: var(--folder-bg-h);
@@ -705,7 +751,7 @@ button:disabled {
 }
 .tree-node.folder::before {
   content: "▸ ";
-  font-size: 9.5px;
+  font-size: 11px;
   color: var(--blue);
   opacity: 0.7;
 }
@@ -721,7 +767,7 @@ button:disabled {
   border: 1px solid var(--file-border);
   color: var(--file-text);
   font-weight: 400;
-  font-size: 12px;
+  font-size: 15px;
 }
 .tree-node.file:hover {
   background: var(--file-bg-h);
@@ -838,14 +884,12 @@ button:disabled {
    RESPONSIVE
 ------------------------------------------------------------ */
 
-/* Narrow the search box a bit on slightly smaller screens */
 @media (max-width: 1300px) {
   .repo-name { max-width: 180px; }
   .search-input { width: 190px; }
   .search-input:focus { width: 250px; }
 }
 
-/* Wrap navbar at medium width */
 @media (max-width: 1100px) {
   .navbar-row--primary {
     height: auto;
@@ -854,78 +898,42 @@ button:disabled {
     gap: 8px;
     row-gap: 8px;
   }
-  .navbar-section.right {
-    margin-left: auto;
-  }
-  .navbar-section.center {
-    flex: 1;
-    justify-content: center;
-  }
-  /* Status bar stays single row — no changes needed */
+  .navbar-section.right { margin-left: auto; }
+  .navbar-section.center { flex: 1; justify-content: center; }
 }
 
 @media (max-width: 900px) {
-  /* Search goes full width on its own row */
-  .search-section {
-    order: -1;
-    width: 100%;
-  }
-  .search-input {
-    width: 100%;
-  }
-  .search-input:focus {
-    width: 100%;
-  }
-  .search-suggestions {
-    width: 100%;
-  }
+  .search-section { order: -1; width: 100%; }
+  .search-input { width: 100%; }
+  .search-input:focus { width: 100%; }
+  .search-suggestions { width: 100%; }
 }
 
 @media (max-width: 768px) {
   html, body { font-size: 13.5px; }
-
   .navbar-row--primary { padding: 8px 12px; }
   .status-bar { padding: 0 12px; height: 40px; }
   .filter-bar { padding: 7px 12px; }
-
   .repo-name { max-width: 140px; font-size: 11.5px; }
   .filter-text-input { width: 130px; }
-
-  /* Progress text still visible — just smaller */
   #progressText { font-size: 12px; min-width: 32px; }
-  .progress-label { display: none; } /* hide "PROGRESS" label, keep bar + % */
-
+  .progress-label { display: none; }
   .tree-view-container { padding: 10px; }
   .tree-root { flex-direction: column; align-items: center; gap: 18px; }
   .children { gap: 16px; }
-
   button { font-size: 13px; padding: 0 11px; height: 34px; }
   .tool-btn { height: 32px; }
 }
 
 @media (max-width: 560px) {
-  /* Stack selection counter and progress vertically */
-  .status-bar {
-    height: auto;
-    padding: 8px 12px;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
+  .status-bar { height: auto; padding: 8px 12px; flex-wrap: wrap; gap: 8px; }
   .status-spacer { display: none; }
-  .progress-container {
-    width: 100%;
-    max-width: 100%;
-  }
-  .selection-counter {
-    flex: 1;
-  }
+  .progress-container { width: 100%; max-width: 100%; }
+  .selection-counter { flex: 1; }
   .counter-label { display: none; }
 }
 
 @media (max-width: 480px) {
-  .navbar-section.center {
-    width: 100%;
-    justify-content: space-between;
-  }
+  .navbar-section.center { width: 100%; justify-content: space-between; }
   .search-input { font-size: 13px; }
 }
