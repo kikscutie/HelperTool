@@ -22,7 +22,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
     // ------------------------
     // Open storage folder
     // ------------------------
-    openStorage: () => ipcRenderer.invoke('open-storage'),
     openDocignore: (repoPath) => ipcRenderer.invoke('open-docignore', repoPath),
     getUserDataPath: () => ipcRenderer.invoke('get-user-data-path'),
     openGlobalDocignore: () => ipcRenderer.invoke('open-global-docignore'),

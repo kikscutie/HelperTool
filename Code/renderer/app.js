@@ -28,7 +28,6 @@ const codeBtn = document.getElementById('codeBtn');
 const generateBtn = document.getElementById('generateBtn');
 const progressBar = document.getElementById('progressBar');
 const progressText = document.getElementById('progressText');
-const openStorageBtn = document.getElementById('openStorageBtn');
 const editDocignoreBtn = document.getElementById('editDocignoreBtn');
 const selectionCount = document.getElementById('selectionCount');
 const clearSelectionBtn = document.getElementById('clearSelectionBtn');
@@ -169,14 +168,6 @@ clearSelectionBtn.addEventListener('click', () => {
     window.electronAPI.setLastSelected([]);
     updateGenerateState();
     displayTree();
-});
-
-openStorageBtn.addEventListener('click', async () => {
-    try {
-        await window.electronAPI.openStorage();
-    } catch {
-        alert('Failed to open storage.');
-    }
 });
 
 editDocignoreBtn.addEventListener('click', async () => {

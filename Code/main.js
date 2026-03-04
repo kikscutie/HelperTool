@@ -73,7 +73,6 @@ function createTray() {
                 mainWindow.focus();
             }
         },
-        { label: 'Open Storage Folder', click: () => openStorage() },
         { type: 'separator' },
         { label: 'Select Previous Repo', submenu: getPreviousReposMenu() },
         { type: 'separator' },
@@ -114,16 +113,6 @@ ipcMain.handle('open-global-docignore', async () => {
     }
 });
 
-ipcMain.handle('open-storage', async () => {
-    try {
-        openStorage();
-        return true;
-    } catch (err) {
-        console.error('[IPC] open-storage failed:', err);
-        return false;
-    }
-});
-
 // ----------------------------
 // Previous Repos Menu
 // ----------------------------
@@ -150,29 +139,6 @@ function getPreviousReposMenu() {
     return submenu;
 }
 
-// ----------------------------
-// Open Storage Folder
-// ----------------------------
-function openStorage() {
-    try {
-        const activeProject = config.getActiveProject();
-        if (activeProject) {
-            const storagePath = activeProject.storagePath;
-            console.log('[Storage] Opening storage folder:', storagePath);
-            if (fs.existsSync(storagePath)) {
-                shell.openPath(storagePath);
-            } else {
-                console.warn('[Storage] Storage folder does not exist:', storagePath);
-                dialog.showErrorBox('Storage Not Found', 'Storage folder does not exist.');
-            }
-        } else {
-            console.warn('[Storage] No active project');
-            dialog.showErrorBox('No Active Project', 'Select a project first.');
-        }
-    } catch (err) {
-        console.error('[Error] openStorage failed:', err);
-    }
-}
 
 // ----------------------------
 // IPC Handlers
