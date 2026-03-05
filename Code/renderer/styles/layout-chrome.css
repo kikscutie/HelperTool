@@ -172,8 +172,8 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 0 15px;
-  height: 38px;
+  padding: 0 18px;
+  height: 42px;
   white-space: nowrap;
   transition: background var(--ease), border-color var(--ease), color var(--ease), opacity var(--ease);
   letter-spacing: 0.01em;
@@ -200,7 +200,7 @@ button:disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
 .generate-btn:hover { background: #f0b84a; }
 .generate-btn:disabled { background: var(--bg-raised) !important; color: var(--text-muted) !important; border-color: var(--border-subtle) !important; }
 
-.tool-btn { background: transparent; color: var(--text-secondary); border-color: var(--border-subtle); padding: 0 13px; height: 36px; }
+.tool-btn { background: transparent; color: var(--text-secondary); border-color: var(--border-subtle); padding: 0 20px; height: 50px; }
 .tool-btn:hover { background: var(--bg-surface); border-color: var(--border-mid); color: var(--text-primary); }
 
 .clear-btn { color: var(--red) !important; border-color: rgba(244,100,95,0.2) !important; }

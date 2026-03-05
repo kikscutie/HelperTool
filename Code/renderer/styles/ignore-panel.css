@@ -4,8 +4,8 @@
 
 /* ── Toggle button in filter bar ──────────────────────────── */
 .filter-divider {
-  width: 1px;
-  height: 24px;
+  width: 10px;
+  height: 40px;
   background: var(--border-subtle);
   flex-shrink: 0;
   margin: 0 4px;
