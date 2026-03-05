@@ -37,12 +37,46 @@ if (ignoreToggleBtn && ignorePanel) {
 }
 
 /**
- * Collect all unique file extensions from a tree
+ * Extract ALL possible extensions from a filename.
+ * e.g. "index.html.br" → ["br", "html.br"]
+ *      "app.js"        → ["js"]
+ *      "Makefile"      → []  (no dot)
+ */
+function getExtensions(filename) {
+    const dotIndex = filename.indexOf('.');
+    if (dotIndex === -1) return []; // no extension at all
+
+    // Everything after the first dot, lowercased
+    const afterFirst = filename.slice(dotIndex + 1).toLowerCase();
+    const parts = afterFirst.split('.');
+
+    // Build all suffix combinations: for ["html","br"] → ["br", "html.br"]
+    const exts = [];
+    for (let i = parts.length - 1; i >= 0; i--) {
+        exts.push(parts.slice(i).join('.'));
+    }
+    return exts; // most specific (shortest) first
+}
+
+/**
+ * Get the single "primary" extension used for filtering a file.
+ * We use the FULL compound extension so "index.html.br" is treated as "html.br".
+ * Falls back to just the last segment if there's only one dot.
+ */
+function getPrimaryExtension(filename) {
+    const dotIndex = filename.indexOf('.');
+    if (dotIndex === -1) return '';
+    return filename.slice(dotIndex + 1).toLowerCase(); // e.g. "html.br"
+}
+
+/**
+ * Collect all unique file extensions from a tree.
+ * Now captures compound extensions like "html.br".
  */
 export function collectExtensions(tree, exts = new Set()) {
     for (const node of tree) {
         if (node.type === 'file') {
-            const ext = node.name.includes('.') ? node.name.split('.').pop().toLowerCase() : '';
+            const ext = getPrimaryExtension(node.name);
             if (ext) exts.add(ext);
         }
         if (node.children?.length) collectExtensions(node.children, exts);
@@ -51,13 +85,13 @@ export function collectExtensions(tree, exts = new Set()) {
 }
 
 /**
- * Filter tree nodes by active extensions AND remove ignored extensions
- * Returns filtered copy
+ * Filter tree nodes by active extensions AND remove ignored extensions.
+ * Returns filtered copy.
  */
 export function filterTree(tree) {
     function filterNode(node) {
         if (node.type === 'file') {
-            const ext = node.name.includes('.') ? node.name.split('.').pop().toLowerCase() : '';
+            const ext = getPrimaryExtension(node.name);
             // Drop ignored extensions first
             if (ignoredExtensions.has(ext)) return null;
             // Then apply active filter (if any)

@@ -2,6 +2,30 @@ const fs = require('fs');
 const path = require('path');
 const { isIgnored, getIgnoreRules } = require('./docignore');
 
+// ----------------------------
+// Find common ancestor of multiple paths
+// ----------------------------
+function getCommonAncestor(paths) {
+    if (!paths || paths.length === 0) return '';
+    if (paths.length === 1) return path.resolve(path.dirname(paths[0]));
+
+    // Resolve and split each path into parts
+    const splitPaths = paths.map(p => path.resolve(p).split(path.sep));
+
+    // Use first path as reference and walk down until parts diverge
+    const [first, ...rest] = splitPaths;
+    let commonParts = first;
+
+    for (const parts of rest) {
+        const len = Math.min(commonParts.length, parts.length);
+        let i = 0;
+        while (i < len && commonParts[i] === parts[i]) i++;
+        commonParts = commonParts.slice(0, i);
+    }
+
+    return commonParts.join(path.sep) || path.sep;
+}
+
 async function getFolderTree(dir, repoRoot) {
     if (!repoRoot) repoRoot = path.resolve(dir);
 
@@ -41,8 +65,10 @@ async function getFolderTree(dir, repoRoot) {
 async function generateStructure(selectedPaths, outputFile, progressCallback = () => {}) {
     if (!selectedPaths?.length) return;
 
-    const repoRoot = path.resolve(selectedPaths[0]);
-    await getIgnoreRules(repoRoot); // ensures cache is populated
+    // FIX: derive the true repo root as the common ancestor of ALL selected paths
+    // This ensures isIgnored() works correctly when multiple sibling folders are selected
+    const repoRoot = getCommonAncestor(selectedPaths);
+    await getIgnoreRules(repoRoot);
 
     async function buildTree(currentPath) {
         if (isIgnored(currentPath, repoRoot)) return null;
